@@ -174,4 +174,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "booking.tasks.expire_unpaid_bookings",
         "schedule": 60.0,
     },
+    "send-reminders": {
+        "task": "booking.tasks.send_reminders",
+        "schedule": 300.0,
+    },
 }

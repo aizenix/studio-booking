@@ -47,3 +47,18 @@ def test_expire_task_releases_overdue_unpaid_bookings(master, service, day, at, 
     assert at(12) in get_available_slots(master, service, day)
     assert [chat_id for chat_id, _ in sent] == [555]
     assert "was not received in time" in sent[0][1]
+
+
+def test_reminders_are_sent_once(make_booking, sent):
+    now = timezone.now()
+    day_ahead = make_booking(now + dt.timedelta(hours=23), telegram_id=701)
+    Booking.objects.filter(pk=day_ahead.pk).update(created_at=now - dt.timedelta(days=3))
+    make_booking(now + dt.timedelta(minutes=90), telegram_id=702)
+    # Booked a few hours ahead: gets only the 2h reminder later on.
+    make_booking(now + dt.timedelta(hours=5), telegram_id=703)
+    make_booking(now + dt.timedelta(hours=3), telegram_id=None)
+
+    assert tasks.send_reminders() == 2
+    assert tasks.send_reminders() == 0
+    assert sorted(chat_id for chat_id, _ in sent) == [701, 702]
+    assert all(text.startswith("Reminder: your session is") for _, text in sent)

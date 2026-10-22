@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.utils import timezone
 
@@ -94,3 +96,15 @@ def status_message(booking):
             "so the booking was cancelled. If this is a mistake, please contact the studio."
         )
     return booking_card(booking)
+
+
+def reminder_text(booking):
+    start = timezone.localtime(booking.starts_at)
+    today = timezone.localdate()
+    if start.date() == today:
+        when = f"today at {start:%H:%M}"
+    elif start.date() == today + timedelta(days=1):
+        when = f"tomorrow at {start:%H:%M}"
+    else:
+        when = format_when(start)
+    return f"Reminder: your session is {when}. {booking.service.name} with {booking.master.name}."
