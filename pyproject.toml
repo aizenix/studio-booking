@@ -10,3 +10,7 @@ select = ["E", "W", "F", "I", "B", "UP", "SIM", "DJ"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 testpaths = ["tests"]
 addopts = "--strict-markers"
+filterwarnings = [
+    # whitenoise complains when collectstatic has not been run
+    "ignore:No directory at:UserWarning",
+]
