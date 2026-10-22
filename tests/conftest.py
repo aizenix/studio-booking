@@ -1,7 +1,10 @@
 import datetime as dt
+import io
 
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
+from PIL import Image
 
 from booking.models import Booking, Master, Service, WorkingHours
 
@@ -10,6 +13,11 @@ from booking.models import Booking, Master, Service, WorkingHours
 def _local_cache(settings):
     # Throttling hits the cache on every request, tests should not need Redis.
     settings.CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+
+
+@pytest.fixture(autouse=True)
+def _media_root(settings, tmp_path):
+    settings.MEDIA_ROOT = tmp_path / "media"
 
 
 @pytest.fixture
@@ -62,3 +70,10 @@ def make_booking(master, service):
         )
 
     return factory
+
+
+@pytest.fixture
+def receipt_image():
+    buffer = io.BytesIO()
+    Image.new("RGB", (40, 60), "white").save(buffer, format="PNG")
+    return SimpleUploadedFile("photo_2026.png", buffer.getvalue(), content_type="image/png")
