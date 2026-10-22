@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -23,6 +24,7 @@ from .services import (
     create_booking,
 )
 from .slots import get_available_slots
+from .tasks import send_receipt_for_review
 
 
 class Conflict(APIException):
@@ -94,4 +96,5 @@ class ReceiptUploadView(APIView):
             raise Conflict("The deposit window has closed.", "deposit_window_closed") from None
         except InvalidTransition:
             raise Conflict("This booking does not expect a receipt.", "invalid_status") from None
+        transaction.on_commit(lambda: send_receipt_for_review.delay(booking.pk))
         return Response(BookingSerializer(booking).data)

@@ -164,3 +164,14 @@ CURRENCY = env("CURRENCY", "UZS")
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
 TELEGRAM_ADMIN_CHAT_ID = env_int("TELEGRAM_ADMIN_CHAT_ID", 0)
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", REDIS_URL)
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_IGNORE_RESULT = True
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULE = {
+    "expire-unpaid-bookings": {
+        "task": "booking.tasks.expire_unpaid_bookings",
+        "schedule": 60.0,
+    },
+}
