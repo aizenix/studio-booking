@@ -40,19 +40,19 @@ def confirmation_text(*, service, master, starts_at, client_name, phone):
 
 
 def deposit_request_text(booking):
-    lines = [
-        f"Booking #{booking.pk} is held for you until {format_time(booking.deposit_deadline)}.",
-        "",
-        f"To confirm it, pay the deposit of {format_money(booking.deposit_amount)}",
-    ]
+    pay = f"To confirm it, pay the deposit of {format_money(booking.deposit_amount)}"
     if settings.DEPOSIT_PAYMENT_DETAILS:
-        lines.append(f"to: {settings.DEPOSIT_PAYMENT_DETAILS}")
-    lines += [
-        "",
-        "Then send a photo of the receipt to this chat. "
-        "If we do not get it in time, the booking is released automatically.",
-    ]
-    return "\n".join(lines)
+        pay += f" to {settings.DEPOSIT_PAYMENT_DETAILS}"
+    return "\n".join(
+        [
+            f"Booking #{booking.pk} is held for you until {format_time(booking.deposit_deadline)}.",
+            "",
+            pay + ".",
+            "",
+            "Then send a photo of the receipt to this chat. "
+            "If we do not get it in time, the booking is released automatically.",
+        ]
+    )
 
 
 def booking_card(booking):
