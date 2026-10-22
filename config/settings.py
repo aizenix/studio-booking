@@ -20,7 +20,7 @@ def env_bool(name, default=False):
 
 
 def env_int(name, default):
-    return int(os.environ.get(name, default))
+    return int(os.environ.get(name) or default)
 
 
 def env_list(name, default=""):
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "rest_framework",
     "booking",
+    "bot",
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,6 @@ BOOKING_MIN_NOTICE_MINUTES = env_int("BOOKING_MIN_NOTICE_MINUTES", 60)
 DEPOSIT_TIMEOUT_MINUTES = env_int("DEPOSIT_TIMEOUT_MINUTES", 30)
 DEPOSIT_PAYMENT_DETAILS = env("DEPOSIT_PAYMENT_DETAILS")
 CURRENCY = env("CURRENCY", "UZS")
+
+TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
+TELEGRAM_ADMIN_CHAT_ID = env_int("TELEGRAM_ADMIN_CHAT_ID", 0)
