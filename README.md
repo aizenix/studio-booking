@@ -1,6 +1,6 @@
 # studio-booking
 
-[![CI](https://github.com/Aizen768/studio-booking/actions/workflows/ci.yml/badge.svg)](https://github.com/Aizen768/studio-booking/actions/workflows/ci.yml)
+[![CI](https://github.com/aizenix/studio-booking/actions/workflows/ci.yml/badge.svg)](https://github.com/aizenix/studio-booking/actions/workflows/ci.yml)
 
 Booking backend for a tattoo studio: the website and a Telegram bot share one calendar, clients pay a deposit and send a photo of the receipt, unpaid bookings are released automatically after a timeout. A cleaned-up version of a project I built for a studio in Tashkent.
 
