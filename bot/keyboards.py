@@ -8,7 +8,19 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from .callbacks import CANCEL, NOOP, ConfirmCb, DayCb, MasterCb, ReviewCb, ServiceCb, SlotCb
+from booking.models import Booking
+
+from .callbacks import (
+    CANCEL,
+    NOOP,
+    ConfirmCb,
+    DayCb,
+    MasterCb,
+    MyBookingCb,
+    ReviewCb,
+    ServiceCb,
+    SlotCb,
+)
 from .formatting import format_money, format_time
 
 BOOK_BUTTON = "Book a session"
@@ -110,4 +122,25 @@ def review_keyboard(booking_id):
     builder = InlineKeyboardBuilder()
     builder.button(text="Approve", callback_data=ReviewCb(action="approve", booking_id=booking_id))
     builder.button(text="Reject", callback_data=ReviewCb(action="reject", booking_id=booking_id))
+    return builder.as_markup()
+
+
+def booking_actions_keyboard(booking):
+    builder = InlineKeyboardBuilder()
+    if booking.status == Booking.Status.PENDING_DEPOSIT:
+        builder.button(
+            text="Send receipt", callback_data=MyBookingCb(action="receipt", booking_id=booking.pk)
+        )
+    builder.button(
+        text="Cancel booking", callback_data=MyBookingCb(action="cancel", booking_id=booking.pk)
+    )
+    return builder.as_markup()
+
+
+def cancel_confirm_keyboard(booking_id):
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text="Yes, cancel", callback_data=MyBookingCb(action="cancel_yes", booking_id=booking_id)
+    )
+    builder.button(text="Keep it", callback_data=MyBookingCb(action="keep", booking_id=booking_id))
     return builder.as_markup()
